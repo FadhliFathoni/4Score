@@ -18,6 +18,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.only(top: 15),
         width: width(context),
         height: height(context),
         color: BG_COLOR,

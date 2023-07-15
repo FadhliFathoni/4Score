@@ -13,18 +13,26 @@ class ScaffoldCheckUser extends StatelessWidget {
     return StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          try {
             return Scaffold(
               appBar: appbar,
               body: body,
             );
-          } else if (snapshot.hasError) {
-            throw "Login failed";
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else {
-            return IntroSliderPage();
+          } catch (e) {
+            throw (e);
           }
+          // if (snapshot.hasData) {
+          //   return Scaffold(
+          //     appBar: appbar,
+          //     body: body,
+          //   );
+          // } else if (snapshot.hasError) {
+          //   throw "Login failed";
+          // } else if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return CircularProgressIndicator();
+          // } else {
+          //   return IntroSliderPage();
+          // }
         });
   }
 }

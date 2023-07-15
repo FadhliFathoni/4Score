@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fourscore/Component/MyButton.dart';
+import 'package:fourscore/Component/ScaffoldCheckUser.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
+import 'package:fourscore/Component/mySnackBar.dart';
 import 'package:fourscore/SignIn/Auth/SignInWithEmail.dart';
+import 'package:fourscore/SignIn/Auth/SignInWithGoogle.dart';
 import 'package:fourscore/SignIn/EmailTextField.dart';
 import 'package:fourscore/SignIn/PasswordTextField.dart';
 import 'package:fourscore/main.dart';
@@ -27,6 +31,14 @@ class _SignInPageState extends State<SignInPage> {
     prefs.setBool("first", false);
   }
 
+  // void checkUser(BuildContext context, String email, String password) {
+  //   try {
+  //     registerWithEmail(context, email, password);
+  //   } catch (e) {
+  //     signInWithEmail(context, email, password);
+  //   }
+  // }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -36,7 +48,7 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldCheckUser(
       body: Container(
         height: height(context),
         width: width(context),
@@ -96,44 +108,63 @@ class _SignInPageState extends State<SignInPage> {
                             print("login");
                           },
                           text: "Sign In"),
-                      Container(
-                        margin: EdgeInsets.only(top: 17),
-                        width: width(context),
-                        height: 60,
-                        constraints: BoxConstraints(maxWidth: 335),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image(
-                                image: AssetImage("assets/icons/google.png"),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 14),
-                                child: MyText(
-                                  text: "Sign In With Google",
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                      ButtonGoogle(onPressed: () async {
+                        UserCredential? userCredential =
+                            await SignInWithGoogle();
+                        User? user = userCredential.user;
+                        mySnackBar(context, "Succesfully Login", Colors.green);
+                      }),
                     ],
                   ),
                 )
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ButtonGoogle extends StatelessWidget {
+  const ButtonGoogle({
+    super.key,
+    required this.onPressed,
+  });
+
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 17),
+      width: width(context),
+      height: 60,
+      constraints: BoxConstraints(maxWidth: 335),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image(
+              image: AssetImage("assets/icons/google.png"),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 14),
+              child: MyText(
+                text: "Sign In With Google",
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          ],
         ),
       ),
     );

@@ -45,6 +45,8 @@ dependencies:
   simple_circular_progress_bar: ^1.0.2
   akar_icons_flutter: ^1.1.16
   shared_preferences: ^2.2.0
+  cloud_firestore: ^4.8.3
+  google_sign_in: ^6.1.4
 
 
 dev_dependencies:
