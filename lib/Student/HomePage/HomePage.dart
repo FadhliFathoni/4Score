@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:fourscore/Component/FirebasePicture.dart';
 import 'package:fourscore/Component/Permissions.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
-import 'package:fourscore/HomePage/MySimpleCircularProgressBar.dart';
-import 'package:fourscore/HomePage/QrView.dart';
-import 'package:fourscore/Profile/ProfilePage.dart';
+import 'package:fourscore/Student/HomePage/MySimpleCircularProgressBar.dart';
+import 'package:fourscore/Student/HomePage/QrView.dart';
+import 'package:fourscore/Student/Profile/ProfilePage.dart';
 import 'package:fourscore/main.dart';
 import 'package:hexcolor/hexcolor.dart';
 

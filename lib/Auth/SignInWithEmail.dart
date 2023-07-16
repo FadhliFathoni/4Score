@@ -1,10 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fourscore/Component/mySnackBar.dart';
-import 'package:fourscore/HomePage/MainPage.dart';
+import 'package:fourscore/Student/HomePage/MainPage.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 

@@ -3,7 +3,7 @@
 library rounded_tabbar_widget;
 
 import 'package:flutter/material.dart';
-import 'package:fourscore/HomePage/TabBar/MyTabbarWidget.dart';
+import 'package:fourscore/Component/TabBar/MyTabbarWidget.dart';
 import 'package:fourscore/main.dart';
 
 class MyTabBar extends StatefulWidget {

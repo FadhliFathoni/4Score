@@ -4,8 +4,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fourscore/HomePage/MainPage.dart';
 import 'package:fourscore/Intro/IntroSliderPage.dart';
+import 'package:fourscore/Student/HomePage/MainPage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
@@ -14,6 +14,7 @@ import 'Component/Text/MyText.dart';
 Color PRIMARY_COLOR = HexColor("#FF7800");
 Color SECONDARY_COLOR = HexColor("#2D2F3A");
 Color BG_COLOR = HexColor("#252525");
+Color INPUT = HexColor("#7C7C7C");
 
 double height(BuildContext context) => MediaQuery.of(context).size.height;
 double width(BuildContext context) => MediaQuery.of(context).size.width;

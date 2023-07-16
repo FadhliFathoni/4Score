@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:fourscore/HomePage/CalendarPage.dart';
-import 'package:fourscore/HomePage/HomePage.dart';
-import 'package:fourscore/HomePage/TabBar/MyTabBar.dart';
+import 'package:fourscore/Student/HomePage/CalendarPage.dart';
+import 'package:fourscore/Student/HomePage/HomePage.dart';
+import 'package:fourscore/Component/TabBar/MyTabBar.dart';
 import 'package:fourscore/main.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:akar_icons_flutter/akar_icons_flutter.dart';

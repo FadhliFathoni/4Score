@@ -11,8 +11,8 @@ import 'package:fourscore/Component/MyButton.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
 import 'package:fourscore/Component/myDialog.dart';
 import 'package:fourscore/Component/mySnackBar.dart';
-import 'package:fourscore/Profile/BornTextField.dart';
-import 'package:fourscore/Profile/ProfileTextField.dart';
+import 'package:fourscore/Student/Profile/BornTextField.dart';
+import 'package:fourscore/Student/Profile/ProfileTextField.dart';
 import 'package:fourscore/main.dart';
 
 class ProfilePage extends StatefulWidget {

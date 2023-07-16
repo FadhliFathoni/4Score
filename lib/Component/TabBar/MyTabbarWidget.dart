@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fourscore/HomePage/TabBar/MyTabbarItemWidget.dart';
+import 'package:fourscore/Component/TabBar/MyTabbarItemWidget.dart';
 
 class MyTabbarWidget extends StatefulWidget {
   final int selectedIndex;
