@@ -25,15 +25,14 @@ final kEvents = LinkedHashMap<DateTime, List<Event>>(
 
 List num = [0, 1, 2];
 List<Event> event = [Event("Libur"), Event("Libur"), Event("Libur")];
+List<Event> eventToday = [Event("Minggu")];
 
-final _kEventSource =
-    Map.fromIterable(num, key: (item) => DateTime.now().subtract(Duration(days: 1)), value: (item) => event)
-      ..addAll({
-        kToday: [
-          Event('Today\'s Event 1'),
-          Event('Today\'s Event 2'),
-        ],
-      });
+final _kEventSource = Map.fromIterable(num,
+    key: (item) => DateTime.now().subtract(Duration(days: 1)),
+    value: (item) => event)
+  ..addAll({
+    kToday: eventToday,
+  });
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;

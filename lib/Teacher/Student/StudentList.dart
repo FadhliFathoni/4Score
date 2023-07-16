@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
-import 'package:fourscore/Student/HomePage/MySimpleCircularProgressBar.dart';
+import 'package:fourscore/Student/HomePage/Home/MySimpleCircularProgressBar.dart';
 import 'package:fourscore/main.dart';
 
 class StudentList extends StatefulWidget {

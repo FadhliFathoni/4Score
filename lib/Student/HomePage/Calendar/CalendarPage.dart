@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
-import 'package:fourscore/Component/Utils.dart';
+import 'package:fourscore/Student/HomePage/Calendar/Utils.dart';
 import 'package:fourscore/main.dart';
 import 'package:table_calendar/table_calendar.dart';
 
