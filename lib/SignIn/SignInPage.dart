@@ -42,10 +42,11 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
+      backgroundColor: BG_COLOR,
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Container(
           height: height(context),
           width: width(context),
@@ -96,13 +97,15 @@ class _SignInPageState extends State<SignInPage> {
                     child: Column(
                       children: [
                         MyButton(
+                            background: PRIMARY_COLOR,
+                            foreground: SECONDARY_COLOR,
                             onPressed: () async {
                               signInWithEmail(
                                 context,
                                 emailController.text.trim(),
                                 passwordController.text.trim(),
                               );
-                              
+
                               print("login");
                             },
                             text: "Sign In"),
@@ -142,35 +145,40 @@ class ButtonGoogle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 17),
-      width: width(context),
-      height: 60,
-      constraints: BoxConstraints(maxWidth: 335),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(
-              image: AssetImage("assets/icons/google.png"),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 17),
+        width: width(context),
+        height: 60,
+        constraints: BoxConstraints(maxWidth: 335),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
             ),
-            Container(
-              margin: EdgeInsets.only(left: 14),
-              child: MyText(
-                text: "Sign In With Google",
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                image: AssetImage("assets/icons/google.png"),
               ),
-            )
-          ],
+              Container(
+                margin: EdgeInsets.only(left: 14),
+                child: MyText(
+                  text: "Sign In With Google",
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

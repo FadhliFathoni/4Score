@@ -74,11 +74,41 @@ class _IntroSliderPage2State extends State<IntroSliderPage2>
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 25),
                       child: MyButton(
+                        background: PRIMARY_COLOR,
+                        foreground: BG_COLOR,
                         text: "I'am Teacher",
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return SignInPage();
+                              },
+                              transitionDuration: Duration(milliseconds: 500),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(0.0, 1.0),
+                                    end: Offset.zero,
+                                  ).animate(
+                                    CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.easeInOut,
+                                    ),
+                                  ),
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
                     MyButton(
+                      background: PRIMARY_COLOR,
+                      foreground: BG_COLOR,
                       text: "I am Student",
                       onPressed: () {
                         Navigator.pushReplacement(

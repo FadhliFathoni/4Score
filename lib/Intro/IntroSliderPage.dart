@@ -92,6 +92,8 @@ class _IntroSliderPageState extends State<IntroSliderPage>
                       bottom: 0,
                       child: MyButton(
                         text: "Get Started",
+                        background: PRIMARY_COLOR,
+                        foreground: BG_COLOR,
                         onPressed: () {
                           Navigator.pushReplacement(
                               context,

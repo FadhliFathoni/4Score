@@ -6,14 +6,23 @@ class MyButton extends StatelessWidget {
   final void Function() onPressed;
   final String text;
   Color? background = PRIMARY_COLOR;
+  Color? foreground = Colors.black;
+  double? Width;
+  double? Height;
   MyButton(
-      {super.key, required this.onPressed, required this.text});
+      {super.key,
+      required this.onPressed,
+      required this.text,
+      this.Width,
+      this.Height,
+      this.foreground,
+      this.background});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width(context),
-      height: 60,
+      width: (Width == null) ? width(context) : Width,
+      height: (Height == null) ? 60 : Height,
       constraints: BoxConstraints(maxWidth: 335),
       child: ElevatedButton(
         onPressed: onPressed,
@@ -24,7 +33,7 @@ class MyButton extends StatelessWidget {
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: background,
-          foregroundColor: Colors.black,
+          foregroundColor: foreground,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),

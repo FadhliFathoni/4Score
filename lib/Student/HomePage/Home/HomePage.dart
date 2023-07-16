@@ -34,11 +34,12 @@ class _HomePageState extends State<HomePage> {
       Timer(Duration(seconds: 3), () {
         setState(() {});
       });
-      
+
       super.initState();
     }
 
     return Scaffold(
+      backgroundColor: BG_COLOR,
       body: StreamBuilder(
         stream: collection.snapshots(),
         builder: (context, snapshot) {
@@ -220,7 +221,10 @@ class _HomePageState extends State<HomePage> {
           } else if (snapshot.hasError) {
             return Text("There's an error");
           } else {
-            return CircularProgressIndicator();
+            return Center(
+                child: CircularProgressIndicator(
+              color: PRIMARY_COLOR,
+            ));
           }
         },
       ),

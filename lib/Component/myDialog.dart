@@ -6,12 +6,9 @@ import 'package:fourscore/main.dart';
 
 void myDialog(BuildContext context, String text) {
   showDialog(
-    barrierDismissible: false,
+    barrierDismissible: true,
     context: context,
     builder: (context) {
-      Timer(Duration(seconds: 2), () {
-        Navigator.pop(context);
-      });
       return AlertDialog(
         backgroundColor: SECONDARY_COLOR,
         title: Center(

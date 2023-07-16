@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fourscore/main.dart';
 
 class FirebasePicture extends StatelessWidget {
   FirebasePicture({
@@ -49,7 +50,9 @@ class FirebasePicture extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Text("There's an error");
         } else {
-          return CircularProgressIndicator();
+          return CircularProgressIndicator(
+            color: PRIMARY_COLOR,
+          );
         }
       },
     );

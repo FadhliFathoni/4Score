@@ -81,7 +81,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     }
                     //Widget starts here
                     return SingleChildScrollView(
-                  
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
                       child: Container(
                         width: width(context),
                         color: BG_COLOR,
@@ -135,11 +136,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 (nameController.text.isEmpty)
                                                     ? data['name']
                                                     : nameController.text,
-                                            "nis":
-                                                (nisController.text.isEmpty)
-                                                    ? data["nis"]
-                                                    : int.parse(
-                                                        nisController.text),
+                                            "nis": (nisController.text.isEmpty)
+                                                ? data["nis"]
+                                                : int.parse(nisController.text),
                                             "class":
                                                 (classController.text.isEmpty)
                                                     ? data["class"]
@@ -151,14 +150,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                           });
                                           uploadFile();
                                           collection.doc(id).update({
-                                            "picture": pickedFile!.name,
+                                            "picture": (pickedFile == null)
+                                                ? (data['picture'] == null)
+                                                    ? null
+                                                    : data['picture']
+                                                : pickedFile!.name,
                                           });
                                         }
                                         Navigator.pop(context);
                                         myDialog(context, "Success");
                                       } catch (e) {
-                                        mySnackBar(context,
-                                            "Fill all the form", Colors.red);
+                                        print(e);
                                       }
                                     },
                                     icon: Icon(
@@ -212,8 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ProfileTextField(
                               controller: nameController,
                               title: "Name",
-                              hintText:
-                                  (data != null) ? data['name'] : "Name",
+                              hintText: (data != null) ? data['name'] : "Name",
                             ),
                             ProfileTextField(
                               controller: nisController,
@@ -246,8 +247,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: BornTextField(data: data, born: born),
                             ),
                             Container(
-                              margin: EdgeInsets.only(top: 8.5),
+                              margin: EdgeInsets.only(top: 8.5, bottom: 8.5),
                               child: MyButton(
+                                foreground: PRIMARY_COLOR,
+                                background: SECONDARY_COLOR,
                                 onPressed: () {
                                   signOut(context);
                                 },
