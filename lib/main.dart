@@ -1,11 +1,15 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fourscore/Intro/IntroSliderPage.dart';
 import 'package:fourscore/Student/HomePage/MainPage.dart';
+import 'package:fourscore/Teacher/Home/HomeTeacher.dart';
+import 'package:fourscore/Teacher/MainTeacher.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
@@ -56,8 +60,36 @@ class _SplashScreenState extends State<SplashScreen>
   Widget checkUser() {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      return MainPage();
+      // Check if the user is a teacher
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference collectionGuru = firestore.collection("guru");
+      return FutureBuilder<QuerySnapshot>(
+        future:
+            collectionGuru.where("email", isEqualTo: currentUser.email).get(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show a loading indicator while waiting for the query result
+            return Center(
+                child: CircularProgressIndicator(
+              color: PRIMARY_COLOR,
+            ));
+          }
+          if (snapshot.hasError) {
+            // Handle any potential errors
+            print(snapshot.error);
+            return Text('An error occurred');
+          }
+          if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+            // User is a teacher, navigate to teacher screen
+            return MainTeacher();
+          } else {
+            // User is not a teacher, navigate to student screen
+            return MainPage();
+          }
+        },
+      );
     } else {
+      // User is not logged in, navigate to intro slider page
       return IntroSliderPage();
     }
   }
@@ -91,6 +123,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: BG_COLOR,
       body: Container(
         alignment: Alignment.center,
         height: height(context),

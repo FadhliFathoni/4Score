@@ -13,11 +13,9 @@ void signOut(BuildContext context) async {
   await googleSignIn!.signOut();
   await auth.signOut();
   myDialog(context, "Successfully Logout");
-  Timer(Duration(seconds: 2), () {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-      builder: (context) {
-        return SignInPage();
-      },
-    ));
-  });
+  Navigator.pushReplacement(context, MaterialPageRoute(
+    builder: (context) {
+      return SignInPage();
+    },
+  ));
 }

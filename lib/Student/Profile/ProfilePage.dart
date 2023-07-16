@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fourscore/Auth/SignOut.dart';
 import 'package:fourscore/Component/FirebasePicture.dart';
@@ -46,10 +47,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future uploadFile() async {
-    final path = '${user!.email}/${pickedFile!.name}';
+    // final path = '${user!.email}/${pickedFile!.name}';
     final file = File(pickedFile!.path!);
 
-    final ref = FirebaseStorage.instance.ref().child(path);
+    final ref = FirebaseStorage.instance.ref().child("${pickedFile!.name}");
     uploadTask = ref.putFile(file);
 
     final snapshot = await uploadTask!.whenComplete(() {});
@@ -80,6 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     }
                     //Widget starts here
                     return SingleChildScrollView(
+                  
                       child: Container(
                         width: width(context),
                         color: BG_COLOR,
@@ -120,7 +122,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             "name": nameController.text,
                                             "nis":
                                                 int.parse(nisController.text),
-                                            "class": classController.text,
+                                            "class": classController.text
+                                                .toUpperCase(),
                                             "born": born
                                           });
                                         } else {
@@ -132,13 +135,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 (nameController.text.isEmpty)
                                                     ? data['name']
                                                     : nameController.text,
-                                            "nis": (nisController.text.isEmpty)
-                                                ? data["nis"]
-                                                : int.parse(nisController.text),
+                                            "nis":
+                                                (nisController.text.isEmpty)
+                                                    ? data["nis"]
+                                                    : int.parse(
+                                                        nisController.text),
                                             "class":
                                                 (classController.text.isEmpty)
                                                     ? data["class"]
-                                                    : classController.text,
+                                                    : classController.text
+                                                        .toUpperCase(),
                                             "born": (born == null)
                                                 ? data["born"]
                                                 : born
@@ -151,8 +157,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         Navigator.pop(context);
                                         myDialog(context, "Success");
                                       } catch (e) {
-                                        mySnackBar(context, "Fill all the form",
-                                            Colors.red);
+                                        mySnackBar(context,
+                                            "Fill all the form", Colors.red);
                                       }
                                     },
                                     icon: Icon(
@@ -206,7 +212,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             ProfileTextField(
                               controller: nameController,
                               title: "Name",
-                              hintText: (data != null) ? data['name'] : "Name",
+                              hintText:
+                                  (data != null) ? data['name'] : "Name",
                             ),
                             ProfileTextField(
                               controller: nisController,

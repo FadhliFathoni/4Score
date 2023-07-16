@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fourscore/Component/MyButton.dart';
-import 'package:fourscore/Component/ScaffoldCheckUser.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
 import 'package:fourscore/Component/mySnackBar.dart';
 import 'package:fourscore/Auth/SignInWithEmail.dart';
@@ -32,13 +32,6 @@ class _SignInPageState extends State<SignInPage> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  // void checkUser(BuildContext context, String email, String password) {
-  //   try {
-  //     registerWithEmail(context, email, password);
-  //   } catch (e) {
-  //     signInWithEmail(context, email, password);
-  //   }
-  // }
 
   @override
   void initState() {
@@ -49,6 +42,7 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -102,12 +96,13 @@ class _SignInPageState extends State<SignInPage> {
                     child: Column(
                       children: [
                         MyButton(
-                            onPressed: () {
+                            onPressed: () async {
                               signInWithEmail(
                                 context,
                                 emailController.text.trim(),
                                 passwordController.text.trim(),
                               );
+                              
                               print("login");
                             },
                             text: "Sign In"),
