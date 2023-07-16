@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:fourscore/Component/ScaffoldCheckUser.dart';
 import 'package:fourscore/HomePage/CalendarPage.dart';
 import 'package:fourscore/HomePage/HomePage.dart';
 import 'package:fourscore/HomePage/TabBar/MyTabBar.dart';
@@ -20,22 +19,22 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      color: BG_COLOR,
+      title: "4Score",
       debugShowCheckedModeBanner: false,
-      home: ScaffoldCheckUser(
-        body: MyTabBar(
-            itemSelectedColor: PRIMARY_COLOR,
-            tabBarBackgroundColor: HexColor("#2D2F3A"),
-            itemNormalColor: HexColor("#FFFFFF"),
-            pages: [
-              HomePage(),
-              CalendarPage(),
-            ],
-            tabIcons: [
-              AkarIcons.home_alt1,
-              AkarIcons.newspaper,
-            ]),
-      ),
+      home: Scaffold(
+          body: MyTabBar(
+              itemSelectedColor: PRIMARY_COLOR,
+              tabBarBackgroundColor: HexColor("#2D2F3A"),
+              itemNormalColor: HexColor("#FFFFFF"),
+              pages: [
+            HomePage(),
+            CalendarPage(),
+          ],
+              tabIcons: [
+            AkarIcons.home_alt1,
+            AkarIcons.newspaper,
+          ])),
     );
   }
 }
-

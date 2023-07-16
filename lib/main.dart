@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fourscore/HomePage/MainPage.dart';
 import 'package:fourscore/Intro/IntroSliderPage.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
 import 'Component/Text/MyText.dart';
 
@@ -18,6 +19,7 @@ double height(BuildContext context) => MediaQuery.of(context).size.height;
 double width(BuildContext context) => MediaQuery.of(context).size.width;
 
 void main() async {
+  initializeDateFormatting();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
@@ -29,7 +31,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
+      color: BG_COLOR,
+      title: "4Score",
       debugShowCheckedModeBanner: false,
       checkerboardOffscreenLayers: false,
       home: SplashScreen(),
@@ -44,8 +47,10 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
-
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
+  late Animation animation;
 
   Widget checkUser() {
     User? currentUser = FirebaseAuth.instance.currentUser;
@@ -66,6 +71,19 @@ class _SplashScreenState extends State<SplashScreen> {
         },
       ));
     });
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 400),
+    );
+    animation = Tween(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.bounceOut),
+    );
+    animationController.addListener(() {
+      setState(() {});
+    });
+    Timer(Duration(seconds: 1), () {
+      animationController.forward();
+    });
     super.initState();
   }
 
@@ -79,10 +97,13 @@ class _SplashScreenState extends State<SplashScreen> {
         decoration: BoxDecoration(
           color: BG_COLOR,
         ),
-        child: MyText(
-          text: "4Score",
-          color: PRIMARY_COLOR,
-          fontSize: 50,
+        child: Transform.translate(
+          offset: Offset(0, animation.value * -400),
+          child: MyText(
+            text: "4Score",
+            color: PRIMARY_COLOR,
+            fontSize: 50,
+          ),
         ),
       ),
     );

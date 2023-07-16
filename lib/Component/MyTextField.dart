@@ -10,6 +10,7 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 50,
       decoration: BoxDecoration(
           color: HexColor("#2D2F3A"), borderRadius: BorderRadius.circular(10)),
       child: TextField(
@@ -20,6 +21,7 @@ class MyTextField extends StatelessWidget {
           color: HexColor("#7C7C7C"),
         ),
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
           hintText: hintText,
           hintStyle: TextStyle(
             fontFamily: "Lexend",

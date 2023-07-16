@@ -6,8 +6,9 @@ import 'package:fourscore/Component/MyButton.dart';
 import 'package:fourscore/Component/ScaffoldCheckUser.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
 import 'package:fourscore/Component/mySnackBar.dart';
-import 'package:fourscore/SignIn/Auth/SignInWithEmail.dart';
-import 'package:fourscore/SignIn/Auth/SignInWithGoogle.dart';
+import 'package:fourscore/HomePage/MainPage.dart';
+import 'package:fourscore/Auth/SignInWithEmail.dart';
+import 'package:fourscore/Auth/SignInWithGoogle.dart';
 import 'package:fourscore/SignIn/EmailTextField.dart';
 import 'package:fourscore/SignIn/PasswordTextField.dart';
 import 'package:fourscore/main.dart';
@@ -22,8 +23,6 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
   bool obscureText = true;
 
   void getFirstTime() async {
@@ -31,6 +30,8 @@ class _SignInPageState extends State<SignInPage> {
     prefs.setBool("first", false);
   }
 
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   // void checkUser(BuildContext context, String email, String password) {
   //   try {
   //     registerWithEmail(context, email, password);
@@ -48,76 +49,86 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldCheckUser(
-      body: Container(
-        height: height(context),
-        width: width(context),
-        color: BG_COLOR,
-        child: Center(
-          child: Container(
-            height: height(context) * 0.7,
-            width: width(context) - 40,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MyText(
-                      text: "Easy to be absent anywhere anytime",
-                      color: HexColor("#FFFFFF"),
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 17),
-                      child: MyText(
-                        text: "Sign in to your account",
-                        color: HexColor("#7C7C7C"),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    EmailTextField(controller: emailController),
-                    PasswordTextField(
-                      controller: passwordController,
-                      obscureText: obscureText,
-                      onPressed: () {
-                        setState(() {
-                          obscureText = !obscureText;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Center(
-                  child: Column(
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Container(
+          height: height(context),
+          width: width(context),
+          color: BG_COLOR,
+          child: Center(
+            child: Container(
+              height: height(context) * 0.7,
+              width: width(context) - 40,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      MyButton(
-                          onPressed: () {
-                            signInWithEmail(
-                              context,
-                              emailController.text.trim(),
-                              passwordController.text.trim(),
-                            );
-                            print("login");
-                          },
-                          text: "Sign In"),
-                      ButtonGoogle(onPressed: () async {
-                        UserCredential? userCredential =
-                            await SignInWithGoogle();
-                        User? user = userCredential.user;
-                        mySnackBar(context, "Succesfully Login", Colors.green);
-                      }),
+                      MyText(
+                        text: "Easy to be absent anywhere anytime",
+                        color: HexColor("#FFFFFF"),
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 17),
+                        child: MyText(
+                          text: "Sign in to your account",
+                          color: HexColor("#7C7C7C"),
+                        ),
+                      ),
                     ],
                   ),
-                )
-              ],
+                  Column(
+                    children: [
+                      EmailTextField(controller: emailController),
+                      PasswordTextField(
+                        controller: passwordController,
+                        obscureText: obscureText,
+                        onPressed: () {
+                          setState(() {
+                            obscureText = !obscureText;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Column(
+                      children: [
+                        MyButton(
+                            onPressed: () {
+                              signInWithEmail(
+                                context,
+                                emailController.text.trim(),
+                                passwordController.text.trim(),
+                              );
+                              print("login");
+                            },
+                            text: "Sign In"),
+                        ButtonGoogle(onPressed: () async {
+                          UserCredential? userCredential =
+                              await SignInWithGoogle(context);
+                          User? user = userCredential.user;
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MainPage(),
+                            ),
+                          );
+                          mySnackBar(
+                              context, "Succesfully Login", Colors.green);
+                        }),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
