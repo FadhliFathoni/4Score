@@ -34,18 +34,24 @@ class _MainPageState extends State<MainPage> {
       title: "4Score",
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-          body: MyTabBar(
-              itemSelectedColor: PRIMARY_COLOR,
-              tabBarBackgroundColor: HexColor("#2D2F3A"),
-              itemNormalColor: HexColor("#FFFFFF"),
-              pages: [
-            HomePage(),
-            CalendarPage(),
-          ],
-              tabIcons: [
-            AkarIcons.home_alt1,
-            AkarIcons.newspaper,
-          ])),
+          body: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (notification) {
+          notification.disallowGlow();
+          return false;
+        },
+        child: MyTabBar(
+            itemSelectedColor: PRIMARY_COLOR,
+            tabBarBackgroundColor: HexColor("#2D2F3A"),
+            itemNormalColor: HexColor("#FFFFFF"),
+            pages: [
+              HomePage(),
+              CalendarPage(),
+            ],
+            tabIcons: [
+              AkarIcons.home_alt1,
+              AkarIcons.newspaper,
+            ]),
+      )),
     );
   }
 }

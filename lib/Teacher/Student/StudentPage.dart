@@ -40,90 +40,98 @@ class _StudentPageState extends State<StudentPage> {
     final myCollection = FirebaseFirestore.instance.collection("siswa");
     return Scaffold(
       backgroundColor: BG_COLOR,
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: myCollection.where("email", isEqualTo: widget.email).get(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-              var id = snapshot.data!.docs.first.id;
-              return StreamBuilder(
-                stream: myCollection.doc(id).snapshots(),
-                builder: (context, streamSnapshot) {
-                  if (streamSnapshot.hasData) {
-                    final score = double.parse(
-                        streamSnapshot.data!.data()!['score'].toString());
-                    progressValueNotifier.value = score;
-                    return Column(
-                      children: [
-                        AppBarWidget(),
-                        StudentInfoWidget(
-                          name: widget.name,
-                          nis: widget.nis,
-                          data: widget.data,
-                        ),
-                        SizedBox(height: 30),
-                        MyText(
-                          text: 'Analystic',
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 30),
-                        ValueListenableBuilder(
-                          valueListenable: progressValueNotifier,
-                          builder: (context, value, child) {
-                            return MySimpleCircularProgressBar(
-                              animationDuration: 0,
-                              maxValue: 100,
-                              progressColors: [PRIMARY_COLOR],
-                              mergeMode: true,
-                              backColor: HexColor("#FFFFFF"),
-                              size: 250,
-                              valueNotifier: progressValueNotifier,
-                              onGetText: (value) => Text("${value.toInt()}"),
-                            );
-                          },
-                        ),
-                        SizedBox(height: 40),
-                        ScoreButton(
-                          onMinusPressed: () => _updateScore(id, score - 1),
-                          onPlusPressed: () => _updateScore(id, score + 1),
-                        ),
-                        SizedBox(height: 30),
-                        MyText(
-                          text: 'Send Message',
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 10),
-                        MessageTextField(controller: messageController),
-                        SizedBox(height: 10),
-                        SendMessageButton(
-                          onPressed: () {
-                            myCollection.doc(id).collection("message").add({
-                              "from": FirebaseAuth.instance.currentUser!.email,
-                              "message": messageController.text,
-                            });
-                            messageController.clear();
-                            myDialog(context, "Success");
-                          },
-                        ),
-                      ],
-                    );
-                  } else if (streamSnapshot.hasError) {
-                    return Center(child: MyText(text: 'There\'s an error'));
-                  } else {
-                    return Center(
-                        child: CircularProgressIndicator(color: PRIMARY_COLOR));
-                  }
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: MyText(text: 'There\'s an error'));
-            } else {
-              return Center(
-                  child: CircularProgressIndicator(color: PRIMARY_COLOR));
-            }
-          },
+      body: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (notification) {
+          notification.disallowGlow();
+          return false;
+        },
+        child: SingleChildScrollView(
+          child: FutureBuilder(
+            future: myCollection.where("email", isEqualTo: widget.email).get(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                var id = snapshot.data!.docs.first.id;
+                return StreamBuilder(
+                  stream: myCollection.doc(id).snapshots(),
+                  builder: (context, streamSnapshot) {
+                    if (streamSnapshot.hasData) {
+                      final score = double.parse(
+                          streamSnapshot.data!.data()!['score'].toString());
+                      progressValueNotifier.value = score;
+                      return Column(
+                        children: [
+                          AppBarWidget(),
+                          StudentInfoWidget(
+                            name: widget.name,
+                            nis: widget.nis,
+                            data: widget.data,
+                          ),
+                          SizedBox(height: 30),
+                          MyText(
+                            text: 'Analystic',
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                          SizedBox(height: 30),
+                          ValueListenableBuilder(
+                            valueListenable: progressValueNotifier,
+                            builder: (context, value, child) {
+                              return MySimpleCircularProgressBar(
+                                animationDuration: 0,
+                                maxValue: 100,
+                                progressColors: [PRIMARY_COLOR],
+                                mergeMode: true,
+                                backColor: HexColor("#FFFFFF"),
+                                size: 250,
+                                valueNotifier: progressValueNotifier,
+                                onGetText: (value) => Text("${value.toInt()}"),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 40),
+                          ScoreButton(
+                            onMinusPressed: () => _updateScore(id, score - 1),
+                            onPlusPressed: () => _updateScore(id, score + 1),
+                          ),
+                          SizedBox(height: 30),
+                          MyText(
+                            text: 'Send Message',
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                          SizedBox(height: 10),
+                          MessageTextField(controller: messageController),
+                          SizedBox(height: 10),
+                          SendMessageButton(
+                            onPressed: () {
+                              myCollection.doc(id).collection("message").add({
+                                "from":
+                                    FirebaseAuth.instance.currentUser!.email,
+                                "message": messageController.text,
+                              });
+                              messageController.clear();
+                              myDialog(context, "Success");
+                            },
+                          ),
+                        ],
+                      );
+                    } else if (streamSnapshot.hasError) {
+                      return Center(child: MyText(text: 'There\'s an error'));
+                    } else {
+                      return Center(
+                          child:
+                              CircularProgressIndicator(color: PRIMARY_COLOR));
+                    }
+                  },
+                );
+              } else if (snapshot.hasError) {
+                return Center(child: MyText(text: 'There\'s an error'));
+              } else {
+                return Center(
+                    child: CircularProgressIndicator(color: PRIMARY_COLOR));
+              }
+            },
+          ),
         ),
       ),
     );

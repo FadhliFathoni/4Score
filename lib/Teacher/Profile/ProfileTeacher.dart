@@ -65,9 +65,12 @@ class _ProfileTeacherState extends State<ProfileTeacher> {
         centerTitle: true,
         backgroundColor: BG_COLOR,
         elevation: 0,
+        automaticallyImplyLeading: false,
         actions: [
           Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: IconButton(
               onPressed: () {
                 signOut(context);

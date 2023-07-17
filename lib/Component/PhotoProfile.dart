@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:fourscore/Component/FirebasePicture.dart';
 import 'package:fourscore/main.dart';
 
-
 class PhotoProfile extends StatelessWidget {
   PhotoProfile({
     super.key,

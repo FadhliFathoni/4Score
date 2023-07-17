@@ -55,9 +55,15 @@ class _MyTabbarWidgetState extends State<MyTabbarWidget> {
         left: _marginOffset,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        color: widget.tabBarBackgroundColor,
-      ),
+          borderRadius: BorderRadius.circular(15.0),
+          color: widget.tabBarBackgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 10,
+              offset: Offset(1, 1),
+            ),
+          ]),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.90),
         child: Row(

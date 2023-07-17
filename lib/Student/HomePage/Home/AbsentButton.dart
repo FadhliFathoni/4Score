@@ -54,7 +54,7 @@ class AbsentButton extends StatelessWidget {
   }
 }
 
-class AbsentButtonLogin extends StatelessWidget {
+class AbsentButtonLogin extends StatefulWidget {
   const AbsentButtonLogin({
     super.key,
     required this.user,
@@ -67,6 +67,12 @@ class AbsentButtonLogin extends StatelessWidget {
   final AsyncSnapshot<QuerySnapshot<Object?>> futureSnapshot;
 
   @override
+  State<AbsentButtonLogin> createState() => _AbsentButtonLoginState();
+}
+
+class _AbsentButtonLoginState extends State<AbsentButtonLogin> {
+  Color bg_color = BG_COLOR;
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -76,9 +82,9 @@ class AbsentButtonLogin extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) {
               return QRViewExample(
-                user: user,
-                collections: collection,
-                futureSnapshot: futureSnapshot,
+                user: widget.user,
+                collections: widget.collection,
+                futureSnapshot: widget.futureSnapshot,
               );
             },
           ),
@@ -89,9 +95,15 @@ class AbsentButtonLogin extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         width: width(context) * 9 / 10,
         decoration: BoxDecoration(
-          color: SECONDARY_COLOR,
-          borderRadius: BorderRadius.circular(15),
-        ),
+            color: SECONDARY_COLOR,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 10,
+                offset: Offset(1, 1),
+              ),
+            ]),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

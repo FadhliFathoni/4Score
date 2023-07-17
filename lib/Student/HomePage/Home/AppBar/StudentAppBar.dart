@@ -34,7 +34,15 @@ class StudentAppBar extends StatelessWidget {
                   height: 50,
                   width: 50,
                   decoration: BoxDecoration(
-                      color: HexColor("#2D2F3A"), shape: BoxShape.circle),
+                      color: HexColor("#2D2F3A"),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.4),
+                          blurRadius: 10,
+                          offset: Offset(1, 1),
+                        ),
+                      ]),
                   child: Icon(
                     Icons.notifications_outlined,
                     color: Colors.white,

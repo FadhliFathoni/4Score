@@ -24,8 +24,16 @@ final kEvents = LinkedHashMap<DateTime, List<Event>>(
 )..addAll(_kEventSource);
 
 List num = [0, 1, 2];
-List<Event> event = [Event("Libur"), Event("Libur"), Event("Libur")];
-List<Event> eventToday = [Event("Minggu")];
+List<Event> event = [
+  Event("Coming soon"),
+];
+List<Event> eventToday = [
+  Event("Coming soon"),
+  Event("Coming soon"),
+  Event("Coming soon"),
+  Event("Coming soon"),
+  Event("Coming soon"),
+];
 
 final _kEventSource = Map.fromIterable(num,
     key: (item) => DateTime.now().subtract(Duration(days: 1)),

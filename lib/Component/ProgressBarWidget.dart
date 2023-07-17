@@ -16,7 +16,6 @@ class ProgressBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder(
       future: collection.where("email", isEqualTo: user.email).get(),
       builder: (context, futureSnapshot) {
@@ -54,7 +53,6 @@ class ProgressBarWidget extends StatelessWidget {
               },
             );
           } catch (e) {
-            
             return MySimpleCircularProgressBar(
               animationDuration: 1500,
               maxValue: 100,
