@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fourscore/Intro/IntroSliderPage.dart';
 import 'package:fourscore/Student/HomePage/MainPage.dart';
-import 'package:fourscore/Teacher/Home/HomeTeacher.dart';
+import 'package:fourscore/Teacher/Class/ClassPage.dart';
 import 'package:fourscore/Teacher/MainTeacher.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/date_symbol_data_local.dart';

@@ -1,23 +1,23 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fourscore/Auth/SignOut.dart';
-import 'package:fourscore/Component/FirebasePicture.dart';
 import 'package:fourscore/Component/MyButton.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
 import 'package:fourscore/Component/myDialog.dart';
-import 'package:fourscore/Component/mySnackBar.dart';
 import 'package:fourscore/Student/Profile/BornTextField.dart';
+import 'package:fourscore/Student/Profile/MyTextButton.dart';
+import 'package:fourscore/Component/PhotoProfile.dart';
 import 'package:fourscore/Student/Profile/ProfileTextField.dart';
 import 'package:fourscore/main.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({Key? key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -35,54 +35,90 @@ class _ProfilePageState extends State<ProfilePage> {
   UploadTask? uploadTask;
   User? user = FirebaseAuth.instance.currentUser;
   String? id;
+  dynamic data = null;
+  String picture = "";
 
   Future<void> selectFile() async {
     final result = await FilePicker.platform.pickFiles();
-    setState(
-      () {
-        pickedFile = result?.files.first;
-        fileName = pickedFile!.name;
-      },
-    );
+    if (result == null) {
+      return;
+    }
+    setState(() {
+      pickedFile = result?.files.first;
+      fileName = pickedFile!.name;
+    });
   }
 
-  Future uploadFile() async {
-    // final path = '${user!.email}/${pickedFile!.name}';
-    final file = File(pickedFile!.path!);
+  Future<void> saveProfile() async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+      final collection = firestore.collection("siswa");
+      final querySnapshot = await collection
+          .where("email", isEqualTo: user!.email)
+          .get();
 
-    final ref = FirebaseStorage.instance.ref().child("${pickedFile!.name}");
-    uploadTask = ref.putFile(file);
+      if (querySnapshot.docs.isEmpty) {
+        collection.add({
+          "email": user!.email,
+          "score": 100,
+          "picture": pickedFile?.name,
+          "name": nameController.text,
+          "nis": int.parse(nisController.text),
+          "class": classController.text.toUpperCase(),
+          "born": born,
+        });
+      } else {
+        final docId = querySnapshot.docs.first.id;
+        id = docId;
+        collection.doc(docId).update({
+          "name": nameController.text.isNotEmpty ? nameController.text : data['name'],
+          "nis": nisController.text.isNotEmpty ? int.parse(nisController.text) : data['nis'],
+          "class": classController.text.isNotEmpty ? classController.text.toUpperCase() : data['class'],
+          "born": born ?? data['born'],
+        });
 
-    final snapshot = await uploadTask!.whenComplete(() {});
+        if (pickedFile != null) {
+          final file = File(pickedFile!.path!);
+          final ref = FirebaseStorage.instance.ref().child(pickedFile!.name);
+          uploadTask = ref.putFile(file);
+          await uploadTask!.whenComplete(() {});
+          collection.doc(id).update({
+            "picture": pickedFile!.name,
+          });
+        }
+      }
 
-    final urlDownload = await snapshot.ref.getDownloadURL();
-    print("Download link ${urlDownload}");
+      Navigator.pop(context);
+      myDialog(context, "Success");
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    CollectionReference collection = firestore.collection("siswa");
-    dynamic data;
+    final firestore = FirebaseFirestore.instance;
+    final collection = firestore.collection("siswa");
 
     return Scaffold(
-      body: StreamBuilder(
-        stream: collection.where("email", isEqualTo: user!.email).snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return FutureBuilder(
-                future: collection.where("email", isEqualTo: user!.email).get(),
-                builder: (context, futureSnapshot) {
-                  if (futureSnapshot.hasData) {
-                    if (futureSnapshot.data!.docs.isNotEmpty) {
-                      data = futureSnapshot.data!.docs.first;
-                    } else {
-                      data = null;
-                    }
-                    //Widget starts here
+      backgroundColor: BG_COLOR,
+      body: FutureBuilder<QuerySnapshot>(
+        future: collection.where("email", isEqualTo: user!.email).get(),
+        builder: (context, futureSnapshot) {
+          if (futureSnapshot.hasData) {
+            final documents = futureSnapshot.data!.docs;
+            if (documents.isNotEmpty) {
+              final id = documents.first.id;
+
+              return StreamBuilder<DocumentSnapshot>(
+                stream: collection.doc(id).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    data = snapshot.data!.data()!;
+                    picture = data['picture'] ?? "";
+
                     return SingleChildScrollView(
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                       child: Container(
                         width: width(context),
                         color: BG_COLOR,
@@ -90,79 +126,20 @@ class _ProfilePageState extends State<ProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 17, horizontal: 17),
+                              margin: EdgeInsets.symmetric(vertical: 17, horizontal: 17),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   BackButton(
                                     color: Colors.white,
                                   ),
                                   MyText(
-                                    text: "${user!.email}",
+                                    text: user!.email!,
                                     color: Colors.white,
                                     fontSize: 14,
                                   ),
                                   IconButton(
-                                    onPressed: () async {
-                                      try {
-                                        final querySnapshot = await collection
-                                            .where("email",
-                                                isEqualTo: user!.email)
-                                            .get();
-                                        // final data = querySnapshot.docs.first;
-                                        if (querySnapshot.docs.isEmpty) {
-                                          collection.add({
-                                            "email": user!.email,
-                                            "score": 100,
-                                            "picture":
-                                                (pickedFile!.name.isNotEmpty)
-                                                    ? pickedFile!.name
-                                                    : null,
-                                            "name": nameController.text,
-                                            "nis":
-                                                int.parse(nisController.text),
-                                            "class": classController.text
-                                                .toUpperCase(),
-                                            "born": born
-                                          });
-                                        } else {
-                                          final docId =
-                                              querySnapshot.docs.first.id;
-                                          id = docId;
-                                          collection.doc(docId).update({
-                                            "name":
-                                                (nameController.text.isEmpty)
-                                                    ? data['name']
-                                                    : nameController.text,
-                                            "nis": (nisController.text.isEmpty)
-                                                ? data["nis"]
-                                                : int.parse(nisController.text),
-                                            "class":
-                                                (classController.text.isEmpty)
-                                                    ? data["class"]
-                                                    : classController.text
-                                                        .toUpperCase(),
-                                            "born": (born == null)
-                                                ? data["born"]
-                                                : born
-                                          });
-                                          uploadFile();
-                                          collection.doc(id).update({
-                                            "picture": (pickedFile == null)
-                                                ? (data['picture'] == null)
-                                                    ? null
-                                                    : data['picture']
-                                                : pickedFile!.name,
-                                          });
-                                        }
-                                        Navigator.pop(context);
-                                        myDialog(context, "Success");
-                                      } catch (e) {
-                                        print(e);
-                                      }
-                                    },
+                                    onPressed: saveProfile,
                                     icon: Icon(
                                       Icons.check,
                                       color: Colors.white,
@@ -176,36 +153,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                 children: [
                                   Hero(
                                     tag: 'pp',
-                                    child: Container(
-                                      height: 118,
-                                      width: 118,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(360),
-                                        child: (pickedFile == null)
-                                            ? FirebasePicture(
-                                                data: data,
-                                                boxFit: BoxFit.cover,
-                                              )
-                                            : Image.file(
-                                                File(pickedFile!.path!),
-                                                fit: BoxFit.cover,
-                                              ),
-                                      ),
+                                    child: PhotoProfile(
+                                      pickedFile: pickedFile,
+                                      picture: picture,
+                                      size: 118,
                                     ),
                                   ),
                                   Container(
                                     margin: EdgeInsets.only(top: 15),
-                                    child: TextButton(
-                                      style: TextButton.styleFrom(
-                                          foregroundColor: PRIMARY_COLOR),
-                                      onPressed: () {
-                                        selectFile();
-                                      },
-                                      child: MyText(
-                                        text: "Edit Profile",
-                                        color: PRIMARY_COLOR,
-                                      ),
+                                    child: MyTextButton(
+                                      text: "Edit Profile",
+                                      onPressed: selectFile,
                                     ),
                                   ),
                                 ],
@@ -218,15 +176,12 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             ProfileTextField(
                               controller: nisController,
-                              hintText: (data != null)
-                                  ? data['nis'].toString()
-                                  : "NIS",
+                              hintText: (data != null) ? data['nis'].toString() : "NIS",
                               title: "NIS",
                             ),
                             ProfileTextField(
                               controller: classController,
-                              hintText:
-                                  (data != null) ? data['class'] : "Class",
+                              hintText: (data != null) ? data['class'] : "Class",
                               title: "Class",
                             ),
                             GestureDetector(
@@ -261,7 +216,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     );
-                    //End here
                   } else if (snapshot.hasError) {
                     return Text("There's an error");
                   } else {
@@ -271,14 +225,21 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: BG_COLOR,
                     );
                   }
-                });
-          } else if (snapshot.hasError) {
+                },
+              );
+            } else {
+              return Text("Collection is empty");
+            }
+          } else if (futureSnapshot.hasError) {
+            print(futureSnapshot.error);
             return Text("There's an error");
           } else {
-            return CircularProgressIndicator();
+            return CircularProgressIndicator(
+              color: PRIMARY_COLOR,
+            );
           }
         },
-      ),
+      ), 
     );
   }
 }
