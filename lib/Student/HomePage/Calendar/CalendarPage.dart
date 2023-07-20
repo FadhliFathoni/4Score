@@ -30,11 +30,6 @@ class _CalendarPageState extends State<CalendarPage> {
   void initState() {
     super.initState();
 
-    print(List.generate(50, (index) => index));
-    print(DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5));
-    print(List.generate(
-        item % 4 + 1, (index) => Event('Event $item | ${index + 1}')));
-
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
   }
@@ -193,7 +188,10 @@ class _CalendarPageState extends State<CalendarPage> {
                         itemCount: value.length,
                         itemBuilder: (context, index) {
                           print(value);
-                          return EventListItem(event: value[index]);
+                          return EventListItem(
+                            event: value[index],
+                            date: _selectedDay!,
+                          );
                         },
                       );
                     },

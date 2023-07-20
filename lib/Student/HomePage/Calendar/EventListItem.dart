@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
 import 'package:fourscore/Student/HomePage/Calendar/Utils.dart';
 import 'package:fourscore/main.dart';
+import 'package:intl/intl.dart';
 
 class EventListItem extends StatelessWidget {
+  final DateTime date;
   final Event event;
 
-  const EventListItem({Key? key, required this.event}) : super(key: key);
+  const EventListItem({Key? key, required this.event, required this.date})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +30,11 @@ class EventListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 MyText(
-                  text: "16-20",
+                  text: DateFormat('d').format(date),
                   color: PRIMARY_COLOR,
                 ),
                 MyText(
-                  text: "Jan",
+                  text: DateFormat('MMM').format(date),
                   color: Colors.white,
                 ),
               ],

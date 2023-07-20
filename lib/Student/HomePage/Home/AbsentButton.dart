@@ -33,9 +33,7 @@ class AbsentButton extends StatelessWidget {
                   } else if (snapshot.hasError) {
                     return Text("There's an error");
                   } else {
-                    return CircularProgressIndicator(
-                      color: PRIMARY_COLOR,
-                    );
+                    return Container();
                   }
                 },
               );
@@ -46,9 +44,7 @@ class AbsentButton extends StatelessWidget {
             print(futureSnapshot.error);
             return Text("There's an error");
           } else {
-            return CircularProgressIndicator(
-              color: PRIMARY_COLOR,
-            );
+            return Container();
           }
         });
   }
