@@ -64,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
           "name": nameController.text,
           "nis": int.parse(nisController.text),
           "class": classController.text.toUpperCase(),
-          "born": born,
+          "born": born ?? DateTime.now(),
         });
       } else {
         final docId = querySnapshot.docs.first.id;
@@ -92,11 +92,11 @@ class _ProfilePageState extends State<ProfilePage> {
           });
         }
       }
-
       Navigator.pop(context);
       myDialog(context, "Success");
     } catch (e) {
       print(e);
+      myDialog(context, "Fill all the form");
     }
   }
 
@@ -115,156 +115,232 @@ class _ProfilePageState extends State<ProfilePage> {
         child: FutureBuilder<QuerySnapshot>(
           future: collection.where("email", isEqualTo: user!.email).get(),
           builder: (context, futureSnapshot) {
-            if (futureSnapshot.hasData) {
+            if (futureSnapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: PRIMARY_COLOR,
+                ),
+              );
+            } else if (futureSnapshot.hasError) {
+              print(futureSnapshot.error);
+              return Text("There's an error");
+            } else {
               final documents = futureSnapshot.data!.docs;
               if (documents.isNotEmpty) {
                 final id = documents.first.id;
-
                 return StreamBuilder<DocumentSnapshot>(
                   stream: collection.doc(id).snapshots(),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      data = snapshot.data!.data()!;
-                      picture = data['picture'] ?? "";
-
-                      return SingleChildScrollView(
-                        keyboardDismissBehavior:
-                            ScrollViewKeyboardDismissBehavior.onDrag,
-                        child: Container(
-                          width: width(context),
-                          color: BG_COLOR,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 17, horizontal: 17),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    BackButton(
-                                      color: Colors.white,
-                                    ),
-                                    MyText(
-                                      text: user!.email!,
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
-                                    IconButton(
-                                      onPressed: saveProfile,
-                                      icon: Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                child: Column(
-                                  children: [
-                                    Hero(
-                                      tag: 'pp',
-                                      child: PhotoProfile(
-                                        pickedFile: pickedFile,
-                                        picture: picture,
-                                        size: 118,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 15),
-                                      child: MyTextButton(
-                                        text: "Edit Profile",
-                                        onPressed: selectFile,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              ProfileTextField(
-                                controller: nameController,
-                                title: "Name",
-                                hintText:
-                                    (data != null) ? data['name'] : "Name",
-                              ),
-                              ProfileTextField(
-                                controller: nisController,
-                                hintText: (data != null)
-                                    ? data['nis'].toString()
-                                    : "NIS",
-                                title: "NIS",
-                              ),
-                              ProfileTextField(
-                                controller: classController,
-                                hintText:
-                                    (data != null) ? data['class'] : "Class",
-                                title: "Class",
-                              ),
-                              GestureDetector(
-                                onTap: () async {
-                                  final picked = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime(2023),
-                                    firstDate: DateTime(1945),
-                                    lastDate: DateTime(2023),
-                                  );
-                                  if (picked != null) {
-                                    setState(() {
-                                      born = picked;
-                                      bornController.text = born.toString();
-                                    });
-                                  }
-                                },
-                                child: BornTextField(data: data, born: born),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 8.5, bottom: 8.5),
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.4),
-                                      blurRadius: 10,
-                                      offset: Offset(1, 1),
-                                    ),
-                                  ],
-                                ),
-                                child: MyButton(
-                                  foreground: PRIMARY_COLOR,
-                                  background: SECONDARY_COLOR,
-                                  onPressed: () {
-                                    signOut(context);
-                                  },
-                                  text: "Logout",
-                                ),
-                              ),
-                            ],
-                          ),
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: PRIMARY_COLOR,
                         ),
                       );
                     } else if (snapshot.hasError) {
                       return Text("There's an error");
+                    } else if (snapshot.hasData) {
+                      data = snapshot.data!.data()!;
+                      picture = data['picture'] ?? "";
+
+                      // ... konten profil lainnya ...
+
+                      return ProfileWidget(
+                        userEmail: user!.email,
+                        born: born,
+                        data: data,
+                        pickedFile: pickedFile,
+                        onLogout: signOut,
+                        onSaveProfile: saveProfile,
+                        onSelectFile: selectFile,
+                        nameController: nameController,
+                        nisController: nisController,
+                        classController: classController,
+                        bornController: bornController,
+                      );
                     } else {
-                      return Container(
-                        height: height(context),
-                        width: width(context),
-                        color: BG_COLOR,
+                      // This part is added to show the page with a specific container when there is no collection found
+                      return ProfileWidget(
+                        userEmail: user!.email,
+                        born: born,
+                        data: data,
+                        pickedFile: pickedFile,
+                        onLogout: signOut,
+                        onSaveProfile: saveProfile,
+                        onSelectFile: selectFile,
+                        nameController: nameController,
+                        nisController: nisController,
+                        classController: classController,
+                        bornController: bornController,
                       );
                     }
                   },
                 );
               } else {
-                return Text("Collection is empty");
+                // This part is added to show the page with a specific container when there is no collection found
+                return ProfileWidget(
+                  userEmail: user!.email,
+                  born: born,
+                  data: data,
+                  pickedFile: pickedFile,
+                  onLogout: signOut,
+                  onSaveProfile: saveProfile,
+                  onSelectFile: selectFile,
+                  nameController: nameController,
+                  nisController: nisController,
+                  classController: classController,
+                  bornController: bornController,
+                );
               }
-            } else if (futureSnapshot.hasError) {
-              print(futureSnapshot.error);
-              return Text("There's an error");
-            } else {
-              return CircularProgressIndicator(
-                color: PRIMARY_COLOR,
-              );
             }
           },
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileWidget extends StatefulWidget {
+  final String? userEmail;
+  final Function(BuildContext context) onLogout;
+  final Function() onSaveProfile;
+  final Function() onSelectFile;
+  final TextEditingController nameController;
+  final TextEditingController nisController;
+  final TextEditingController classController;
+  final TextEditingController bornController;
+  late final DateTime? born;
+  final dynamic data;
+  final PlatformFile? pickedFile;
+
+  ProfileWidget({
+    Key? key,
+    this.userEmail,
+    required this.onLogout,
+    required this.onSaveProfile,
+    required this.onSelectFile,
+    required this.nameController,
+    required this.nisController,
+    required this.classController,
+    required this.bornController,
+    this.born,
+    this.data,
+    this.pickedFile,
+  }) : super(key: key);
+
+  @override
+  _ProfileWidgetState createState() => _ProfileWidgetState();
+}
+
+class _ProfileWidgetState extends State<ProfileWidget> {
+  String picture = "";
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        width: width(context),
+        color: BG_COLOR,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 17, horizontal: 17),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  BackButton(color: Colors.white),
+                  MyText(
+                    text: widget.userEmail!,
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                  IconButton(
+                    onPressed: widget.onSaveProfile,
+                    icon: Icon(
+                      Icons.check,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Hero(
+                    tag: 'pp',
+                    child: PhotoProfile(
+                      pickedFile: widget.pickedFile,
+                      picture:
+                          (widget.data != null) ? widget.data["picture"] : "",
+                      size: 118,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 15),
+                    child: MyTextButton(
+                      text: "Edit Profile",
+                      onPressed: widget.onSelectFile,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ProfileTextField(
+              controller: widget.nameController,
+              title: "Name",
+              hintText: (widget.data != null) ? widget.data!['name'] : "Name",
+            ),
+            ProfileTextField(
+              controller: widget.nisController,
+              hintText: (widget.data != null)
+                  ? widget.data!['nis'].toString()
+                  : "NIS",
+              title: "NIS",
+            ),
+            ProfileTextField(
+              controller: widget.classController,
+              hintText: (widget.data != null) ? widget.data!['class'] : "Class",
+              title: "Class",
+            ),
+            GestureDetector(
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime(2023),
+                  firstDate: DateTime(1945),
+                  lastDate: DateTime(2023),
+                );
+                if (picked != null) {
+                  setState(() {
+                    widget.born = picked;
+                    widget.bornController.text = widget.born.toString();
+                  });
+                }
+              },
+              child: BornTextField(data: widget.data, born: widget.born),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 8.5, bottom: 8.5),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.4),
+                    blurRadius: 10,
+                    offset: Offset(1, 1),
+                  ),
+                ],
+              ),
+              child: MyButton(
+                foreground: PRIMARY_COLOR,
+                background: SECONDARY_COLOR,
+                onPressed: () {
+                  widget.onLogout(context);
+                },
+                text: "Logout",
+              ),
+            ),
+          ],
         ),
       ),
     );

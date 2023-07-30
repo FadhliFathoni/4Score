@@ -26,9 +26,14 @@ class UserProfileAppBar extends StatelessWidget {
                 stream: collection.doc(id).snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    var data = snapshot.data!.data();
-                    String picture = (data as Map<String, dynamic>)['picture'];
-                    return StudentAppBar(picture: picture);
+                    try {
+                      var data = snapshot.data!.data();
+                      String picture =
+                          (data as Map<String, dynamic>)['picture'];
+                      return StudentAppBar(picture: picture);
+                    } catch (e) {
+                      return StudentAppBar(picture: "");
+                    }
                   } else if (snapshot.hasError) {
                     return Text("There's an error");
                   } else {

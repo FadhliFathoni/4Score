@@ -20,7 +20,7 @@ class FirebasePicture extends StatefulWidget {
 class _FirebasePictureState extends State<FirebasePicture> {
   Future<String> getImage(String image) async {
     String awaitImage = await image;
-    if (awaitImage.isEmpty) {
+    if (awaitImage.isEmpty || awaitImage == "") {
       return "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjCX5TOKkOk3MBt8V-f8PbmGrdLHCi4BoUOs_yuZ1pekOp8U_yWcf40t66JZ4_e_JYpRTOVCl0m8ozEpLrs9Ip2Cm7kQz4fUnUFh8Jcv8fMFfPbfbyWEEKne0S9e_U6fWEmcz0oihuJM6sP1cGFqdJZbLjaEQnGdgJvcxctqhMbNw632OKuAMBMwL86/s414/pp%20kosong%20wa%20default.jpg";
     } else {
       String imageUrl = 'gs://score-49de5.appspot.com/';

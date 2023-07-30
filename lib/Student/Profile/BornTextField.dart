@@ -18,10 +18,8 @@ class BornTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        vertical: 8.5,
-        horizontal: 20,
-      ),
+      constraints: BoxConstraints(maxWidth: 335),
+      margin: EdgeInsets.symmetric(vertical: 8.5, horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

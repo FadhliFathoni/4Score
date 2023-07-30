@@ -116,7 +116,9 @@ class _ProfileTeacherState extends State<ProfileTeacher> {
                                 child: (pickedFile == null)
                                     ? FirebasePicture(
                                         boxFit: BoxFit.cover,
-                                        picture: data['picture'],
+                                        picture: (data['picture'] != null)
+                                            ? data['picture']
+                                            : "",
                                       )
                                     : Image.file(
                                         File(pickedFile!.path!),
@@ -149,7 +151,7 @@ class _ProfileTeacherState extends State<ProfileTeacher> {
                             ProfileTextField(
                               controller: teachController,
                               title: "Teach",
-                              hintText: data['teach'] ?? "Japanese",
+                              hintText: data['teach'] ?? "Teach",
                             ),
                             SizedBox(height: 20),
                             Container(
