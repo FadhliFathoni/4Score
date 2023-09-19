@@ -23,12 +23,13 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
+final bornController = TextEditingController();
+DateTime? born;
+
 class _ProfilePageState extends State<ProfilePage> {
   final nameController = TextEditingController();
   final nisController = TextEditingController();
   final classController = TextEditingController();
-  final bornController = TextEditingController();
-  DateTime? born;
 
   PlatformFile? pickedFile;
   String fileName = "File Name";
@@ -40,11 +41,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> selectFile() async {
     final result = await FilePicker.platform.pickFiles();
-    if (result == null) {
+    if (result == null || result.files.isEmpty) {
       return;
     }
     setState(() {
-      pickedFile = result?.files.first;
+      pickedFile = result.files.first;
       fileName = pickedFile!.name;
     });
   }
@@ -64,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
           "name": nameController.text,
           "nis": int.parse(nisController.text),
           "class": classController.text.toUpperCase(),
-          "born": born ?? DateTime.now(),
+          "born": (born == null) ? DateTime.now() : born,
         });
       } else {
         final docId = querySnapshot.docs.first.id;
@@ -79,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
           "class": classController.text.isNotEmpty
               ? classController.text.toUpperCase()
               : data['class'],
-          "born": born ?? data['born'],
+          "born": (born == null) ? DateTime.now() : born,
         });
 
         if (pickedFile != null) {
@@ -147,7 +148,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
                       return ProfileWidget(
                         userEmail: user!.email,
-                        born: born,
                         data: data,
                         pickedFile: pickedFile,
                         onLogout: signOut,
@@ -156,13 +156,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         nameController: nameController,
                         nisController: nisController,
                         classController: classController,
-                        bornController: bornController,
                       );
                     } else {
                       // This part is added to show the page with a specific container when there is no collection found
                       return ProfileWidget(
                         userEmail: user!.email,
-                        born: born,
                         data: data,
                         pickedFile: pickedFile,
                         onLogout: signOut,
@@ -171,7 +169,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         nameController: nameController,
                         nisController: nisController,
                         classController: classController,
-                        bornController: bornController,
                       );
                     }
                   },
@@ -180,7 +177,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 // This part is added to show the page with a specific container when there is no collection found
                 return ProfileWidget(
                   userEmail: user!.email,
-                  born: born,
                   data: data,
                   pickedFile: pickedFile,
                   onLogout: signOut,
@@ -189,7 +185,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   nameController: nameController,
                   nisController: nisController,
                   classController: classController,
-                  bornController: bornController,
                 );
               }
             }
@@ -208,8 +203,7 @@ class ProfileWidget extends StatefulWidget {
   final TextEditingController nameController;
   final TextEditingController nisController;
   final TextEditingController classController;
-  final TextEditingController bornController;
-  late final DateTime? born;
+  DateTime? born;
   final dynamic data;
   final PlatformFile? pickedFile;
 
@@ -222,8 +216,6 @@ class ProfileWidget extends StatefulWidget {
     required this.nameController,
     required this.nisController,
     required this.classController,
-    required this.bornController,
-    this.born,
     this.data,
     this.pickedFile,
   }) : super(key: key);
@@ -234,6 +226,7 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   String picture = "";
+  DateTime now = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -271,8 +264,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     tag: 'pp',
                     child: PhotoProfile(
                       pickedFile: widget.pickedFile,
-                      picture:
-                          (widget.data != null) ? widget.data["picture"] : "",
+                      picture: (widget.data != null)
+                          ? widget.data["picture"] ?? ""
+                          : "",
                       size: 118,
                     ),
                   ),
@@ -307,18 +301,18 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               onTap: () async {
                 final picked = await showDatePicker(
                   context: context,
-                  initialDate: DateTime(2023),
+                  initialDate: DateTime(now.year, now.month, now.day),
                   firstDate: DateTime(1945),
-                  lastDate: DateTime(2023),
+                  lastDate: DateTime(now.year, now.month, now.day),
                 );
                 if (picked != null) {
                   setState(() {
-                    widget.born = picked;
-                    widget.bornController.text = widget.born.toString();
+                    born = picked;
+                    bornController.text = widget.born.toString();
                   });
                 }
               },
-              child: BornTextField(data: widget.data, born: widget.born),
+              child: BornTextField(data: widget.data, born: born),
             ),
             Container(
               margin: EdgeInsets.only(top: 8.5, bottom: 8.5),

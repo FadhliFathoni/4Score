@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fourscore/Component/mySnackBar.dart';
 import 'package:fourscore/Student/HomePage/MainPage.dart';
-import 'package:fourscore/Teacher/Class/ClassPage.dart';
 import 'package:fourscore/Teacher/MainTeacher.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;

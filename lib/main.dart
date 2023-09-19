@@ -3,13 +3,11 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:fourscore/Intro/IntroSliderPage.dart';
 import 'package:fourscore/Student/HomePage/MainPage.dart';
-import 'package:fourscore/Teacher/Class/ClassPage.dart';
 import 'package:fourscore/Teacher/MainTeacher.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -73,7 +71,6 @@ class _SplashScreenState extends State<SplashScreen>
             collectionGuru.where("email", isEqualTo: currentUser.email).get(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show a loading indicator while waiting for the query result
             return Center(
                 child: CircularProgressIndicator(
               color: PRIMARY_COLOR,
@@ -81,27 +78,22 @@ class _SplashScreenState extends State<SplashScreen>
           }
           if (snapshot.hasError) {
             // Handle any potential errors
-            print(snapshot.error);
             return Text('An error occurred');
           }
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-            // User is a teacher, navigate to teacher screen
             return MainTeacher();
           } else {
-            // User is not a teacher, navigate to student screen
             return MainPage();
           }
         },
       );
     } else {
-      // User is not logged in, navigate to intro slider page
       return IntroSliderPage();
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context) {
