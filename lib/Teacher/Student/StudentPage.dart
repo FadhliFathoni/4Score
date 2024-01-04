@@ -32,12 +32,38 @@ class StudentPage extends StatefulWidget {
 }
 
 class _StudentPageState extends State<StudentPage> {
+  String dropDownValue = "Terlambat";
   final messageController = TextEditingController();
   final progressValueNotifier = ValueNotifier<double>(0.0);
+  String guruName = "";
+  void fetchData() async {
+    final guruSnapshot = await FirebaseFirestore.instance
+        .collection("guru")
+        .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
+        .get();
+
+    if (guruSnapshot.docs.isNotEmpty) {
+      final guruDoc = guruSnapshot.docs.first;
+      final guruData = guruDoc.data() as Map<String, dynamic>;
+
+      guruName = guruData["name"]; // Get the guru's name
+
+      // Use guruName as needed
+      print("Guru Name: $guruName");
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final myCollection = FirebaseFirestore.instance.collection("siswa");
+
     return Scaffold(
       backgroundColor: BG_COLOR,
       body: NotificationListener<OverscrollIndicatorNotification>(
@@ -89,10 +115,80 @@ class _StudentPageState extends State<StudentPage> {
                             },
                           ),
                           SizedBox(height: 40),
-                          ScoreButton(
-                            onMinusPressed: () => _updateScore(id, score - 1),
-                            onPlusPressed: () => _updateScore(id, score + 1),
+                          Container(
+                            width: width(context),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                PopupMenuButton<String>(
+                                  initialValue: dropDownValue,
+                                  itemBuilder: (BuildContext context) {
+                                    return [
+                                      PopupMenuItem(
+                                        child: Text("Terlambat"),
+                                        value: "Terlambat",
+                                      ),
+                                      PopupMenuItem(
+                                        child: Text("Tidak sopan"),
+                                        value: "Tidak sopan",
+                                      ),
+                                      PopupMenuItem(
+                                        child: Text("Melanggar peraturan"),
+                                        value: "Melanggar peraturan",
+                                      ),
+                                    ];
+                                  },
+                                  onSelected: (String value) {
+                                    setState(() {
+                                      dropDownValue = value;
+                                      messageController.text = value;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: SECONDARY_COLOR,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(Icons.remove,
+                                        color: PRIMARY_COLOR, size: 40),
+                                  ),
+                                ),
+                                // GestureDetector(
+                                //   onTap: onMinusPressed,
+                                //   child: Container(
+                                //     width: 50,
+                                //     height: 50,
+                                //     decoration: BoxDecoration(
+                                //       color: SECONDARY_COLOR,
+                                //       borderRadius: BorderRadius.circular(10),
+                                //     ),
+                                //     child: Icon(Icons.remove, color: PRIMARY_COLOR, size: 40),
+                                //   ),
+                                // ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  // widget.onPlusPressed,
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: SECONDARY_COLOR,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(Icons.add,
+                                        color: PRIMARY_COLOR, size: 40),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                          // ScoreButton(
+                          //   onMinusPressed: () => _updateScore(id, score - 1),
+                          //   onPlusPressed: () => _updateScore(id, score + 1),
+                          // ),
+
                           SizedBox(height: 30),
                           MyText(
                             text: 'Send Message',
@@ -104,10 +200,14 @@ class _StudentPageState extends State<StudentPage> {
                           SizedBox(height: 10),
                           SendMessageButton(
                             onPressed: () {
-                              myCollection.doc(id).collection("message").add({
-                                "from":
-                                    FirebaseAuth.instance.currentUser!.email,
+                              _updateScore(
+                                  id, score - getPelanggaran(dropDownValue));
+                              myCollection.doc(id).collection("notif").add({
+                                "dari": guruName,
                                 "message": messageController.text,
+                                "type": "Pengurangan",
+                                "poin": getPelanggaran(dropDownValue),
+                                "date": DateTime.now()
                               });
                               messageController.clear();
                               myDialog(context, "Success");
@@ -225,4 +325,14 @@ class StudentInfoWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+int getPelanggaran(String pelanggaran) {
+  final Map<String, int> pelanggaranMap = {
+    "Terlambat": 10,
+    "Tidak sopan": 15,
+    "Melanggar peraturan": 20,
+  };
+
+  return pelanggaranMap[pelanggaran] ?? 0;
 }

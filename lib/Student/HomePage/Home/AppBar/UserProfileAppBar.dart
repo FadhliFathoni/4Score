@@ -9,10 +9,12 @@ class UserProfileAppBar extends StatelessWidget {
   final CollectionReference collection;
   final User user;
 
-  const UserProfileAppBar({
+  UserProfileAppBar({
     required this.collection,
     required this.user,
   });
+
+  var mySnapshot;
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +28,14 @@ class UserProfileAppBar extends StatelessWidget {
                 stream: collection.doc(id).snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    mySnapshot = snapshot;
                     try {
                       var data = snapshot.data!.data();
                       String picture =
                           (data as Map<String, dynamic>)['picture'];
-                      return StudentAppBar(picture: picture);
+                      return StudentAppBar(picture: picture, snapshot: snapshot,);
                     } catch (e) {
-                      return StudentAppBar(picture: "");
+                      return StudentAppBar(picture: "", snapshot: snapshot,);
                     }
                   } else if (snapshot.hasError) {
                     return Text("There's an error");
@@ -53,7 +56,7 @@ class UserProfileAppBar extends StatelessWidget {
               );
             }
           } catch (e) {
-            return StudentAppBar(picture: "");
+            return StudentAppBar(picture: "", snapshot: mySnapshot,);
           }
         });
   }

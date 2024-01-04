@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-
 import 'package:flutter/material.dart';
 import 'package:fourscore/Student/HomePage/Calendar/CalendarPage.dart';
 import 'package:fourscore/Student/HomePage/Calendar/Utils.dart';
@@ -52,10 +51,10 @@ class _MainPageState extends State<MainPage> {
                 duration: Duration(seconds: 2),
               ),
             );
-            return false;
+            return true;
           }
 
-          return true; 
+          return false;
         },
         child: Scaffold(
             body: NotificationListener<OverscrollIndicatorNotification>(

@@ -16,18 +16,6 @@ class MainTeacher extends StatefulWidget {
 class _MainTeacherState extends State<MainTeacher> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: MyTabBar(
-            itemSelectedColor: PRIMARY_COLOR,
-            tabBarBackgroundColor: HexColor("#2D2F3A"),
-            itemNormalColor: HexColor("#FFFFFF"),
-            pages: [
-          ClassPage(),
-          ProfileTeacher(),
-        ],
-            tabIcons: [
-          AkarIcons.home_alt1,
-          Icons.person_outline_rounded,
-        ]));
+    return Scaffold(body: ClassPage());
   }
 }

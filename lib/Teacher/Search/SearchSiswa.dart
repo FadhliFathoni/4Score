@@ -47,9 +47,12 @@ class _SearchPageState extends State<SearchPage> {
     final collection = firestore.collection("siswa");
     return Scaffold(
       backgroundColor: BG_COLOR,
-      appBar: TeacherAppBar(BackButton(
-        color: Colors.white,
-      )),
+      appBar: TeacherAppBar(
+          context,
+          BackButton(
+            color: Colors.white,
+          ),
+          []),
       body: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: FutureBuilder(
@@ -107,4 +110,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-

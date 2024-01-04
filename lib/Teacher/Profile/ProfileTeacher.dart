@@ -65,7 +65,7 @@ class _ProfileTeacherState extends State<ProfileTeacher> {
         centerTitle: true,
         backgroundColor: BG_COLOR,
         elevation: 0,
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         actions: [
           Container(
             decoration: BoxDecoration(

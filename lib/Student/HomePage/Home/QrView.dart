@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
 import 'package:fourscore/Component/myDialog.dart';
+import 'package:fourscore/Student/HomePage/MainPage.dart';
 import 'package:fourscore/main.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -75,9 +76,29 @@ class _QRViewExampleState extends State<QRViewExample> {
   void onScanned() {
     try {
       var id = widget.futureSnapshot.data!.docs.first.id;
-      var subCollection = widget.collections.doc(id).collection("absen");
-      subCollection.add({"date": today});
-      Navigator.pop(context);
+      var subCollection = widget.collections.doc(id).collection("notif");
+      subCollection.add({
+        "date": today,
+        "poin": 2,
+        "type": "Menambah",
+      });
+      final score = widget.collections.doc(id).get();
+      widget.collections.doc(id).update({
+        "score": FieldValue.increment(2),
+      });
+
+      Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: () async {
+              // Handle back button press if needed, or return false to prevent it.
+              return false;
+            },
+            child: MainPage(),
+          );
+        },
+      ));
+
       myDialog(context, "Absent success");
     } catch (e) {
       myDialog(context, "There's an error");

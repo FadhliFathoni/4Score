@@ -5,6 +5,7 @@ import 'package:fourscore/Component/Text/MyText.dart';
 import 'package:fourscore/Component/myDialog.dart';
 import 'package:fourscore/Teacher/Class/CardClass.dart';
 import 'package:fourscore/Teacher/Class/TeacherAppBar.dart';
+import 'package:fourscore/Teacher/Profile/ProfileTeacher.dart';
 import 'package:fourscore/Teacher/Search/SearchSiswa.dart';
 import 'package:fourscore/main.dart';
 
@@ -62,7 +63,35 @@ class _ClassPageState extends State<ClassPage> {
     return Scaffold(
       backgroundColor: BG_COLOR,
       appBar: TeacherAppBar(
-        NotificationIcon(),
+        context,
+        Container(),
+        [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ProfileTeacher();
+                  },
+                ),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 15),
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: SECONDARY_COLOR,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          )
+        ],
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (notification) {
@@ -148,34 +177,6 @@ class _ClassPageState extends State<ClassPage> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class NotificationIcon extends StatelessWidget {
-  const NotificationIcon({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        myDialog(context, "Coming soon");
-      },
-      child: Container(
-        margin: EdgeInsets.only(left: 10),
-        padding: EdgeInsets.all(7),
-        decoration: BoxDecoration(
-          color: SECONDARY_COLOR,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          Icons.notifications_none_outlined,
-          color: Colors.white,
-          size: 20,
         ),
       ),
     );

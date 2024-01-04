@@ -17,6 +17,11 @@ class _HomePageState extends State<HomePage> {
   var id;
   // dynamic data;
   String picture = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,4 +55,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

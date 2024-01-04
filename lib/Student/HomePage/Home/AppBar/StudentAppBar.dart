@@ -1,19 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fourscore/Component/FirebasePicture.dart';
 import 'package:fourscore/Component/PhotoProfile.dart';
 import 'package:fourscore/Component/Text/MyText.dart';
 import 'package:fourscore/Component/myDialog.dart';
+import 'package:fourscore/Student/Notification/NotifPage.dart';
 import 'package:fourscore/Student/Profile/ProfilePage.dart';
 import 'package:fourscore/main.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class StudentAppBar extends StatelessWidget {
-  const StudentAppBar({
+  StudentAppBar({
     super.key,
     required this.picture,
+    required this.snapshot,
   });
 
   final String picture;
+  AsyncSnapshot<DocumentSnapshot<Object?>> snapshot;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,14 @@ class StudentAppBar extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                myDialog(context, "Coming soon");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return NotifPage(snapshot: snapshot,);
+                    },
+                  ),
+                );
               },
               child: Container(
                   height: 50,
